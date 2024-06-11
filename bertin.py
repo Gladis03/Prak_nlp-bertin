@@ -1,29 +1,29 @@
 import streamlit as st
-from textblob import TextBlob
+import stanza
+
+# Inisialisasi model NER untuk Bahasa Indonesia
+stanza.download('id')
+nlp = stanza.Pipeline('id', processors='tokenize,ner')
 
 # Judul aplikasi
-st.title("Aplikasi Analisis Sentimen")
+st.title("Implementasi Named Entity Recognition (NER) dengan Bahasa Indonesia")
 
 # Input teks dari pengguna
-user_input = st.text_area("Masukkan teks untuk analisis sentimen:")
+user_input = st.text_area("Masukkan teks dalam Bahasa Indonesia:", "Jakarta adalah ibu kota dari negara Indonesia.")
 
-# Tombol untuk analisis sentimen
-if st.button("Analisis Sentimen"):
-    if user_input:
-        # Lakukan analisis sentimen
-        blob = TextBlob(user_input)
-        sentiment = blob.sentiment
+# Analisis teks menggunakan model NER
+if st.button("Analisis Teks"):
+    doc = nlp(user_input)
+    
+    # Menampilkan hasil NER
+    st.write("Hasil Named Entity Recognition (NER):")
+    for sentence in doc.sentences:
+        for entity in sentence.ents:
+            st.write(f"Entity: {entity.text}, Tipe: {entity.type}")
 
-        # Tampilkan hasil analisis
-        st.write("**Polarity:**", sentiment.polarity)
-        st.write("**Subjectivity:**", sentiment.subjectivity)
-
-        # Interpretasi hasil
-        if sentiment.polarity > 0:
-            st.write("Sentimen: **Positif**")
-        elif sentiment.polarity < 0:
-            st.write("Sentimen: **Negatif**")
-        else:
-            st.write("Sentimen: **Netral**")
-    else:
-        st.write("Silakan masukkan teks untuk dianalisis.")
+# Contoh teks
+st.sidebar.subheader("Contoh Teks")
+if st.sidebar.button("Contoh 1"):
+    st.write("Contoh Teks 1:")
+    example_text = "Presiden Joko Widodo akan mengunjungi kota Bandung pada hari Jumat."
+    st.text_area("Masukkan teks dalam Bahasa Indonesia:", example
